@@ -68,6 +68,12 @@ async function run() {
       res.send(result)
     })
 
+    // my toys
+    app.get('/myToys/:email', async(req,res)=> {
+      const result = await toysCollection.find({seller_email: req.params.email}).toArray()
+      res.send(result)
+    })
+
 
 
 
