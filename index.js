@@ -27,6 +27,20 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     const toysCollection = client.db('toyLab').collection('toys');
+
+    const indexKeys = {name: 1}
+    const indexOptions = {name: "name"}
+    const result = await toysCollection.createIndex(indexKeys, indexOptions);
+
+    app.get('/toySearchByName/:name', async(req,res) => {
+      const search = req.params.name;
+      const result = await toysCollection.find({
+        $or: [
+          {name: {$regex: search, $options: "i"}}
+        ]
+      }).toArray()
+      res.send(result)
+    })
     
     // get all toys
     app.get('/toys/:category', async(req,res) => {
