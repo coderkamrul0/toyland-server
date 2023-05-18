@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
@@ -42,7 +42,7 @@ async function run() {
       res.send(result)
     })
     
-    // get all toys
+    // get all toys by category
     app.get('/toys/:category', async(req,res) => {
         if(req.params.category == 'Baby' || req.params.category == "Barbie" || req.params.category == 'American'){
 
@@ -71,6 +71,14 @@ async function run() {
     // my toys
     app.get('/myToys/:email', async(req,res)=> {
       const result = await toysCollection.find({seller_email: req.params.email}).toArray()
+      res.send(result)
+    })
+
+    // toy details
+    app.get('/toy/:id', async(req,res)=> {
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)}
+      const result = await toysCollection.findOne(filter)
       res.send(result)
     })
 
