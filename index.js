@@ -73,6 +73,15 @@ async function run() {
       const result = await toysCollection.find({seller_email: req.params.email}).toArray()
       res.send(result)
     })
+    
+
+
+
+
+
+
+
+
 
     // toy details
     app.get('/toy/:id', async(req,res)=> {
@@ -98,6 +107,14 @@ async function run() {
         }
       }
       const result = await toysCollection.updateOne(filter, updateToy);
+      res.send(result)
+    })
+
+    // delete
+    app.delete('/allToys/:id', async(req,res)=> {
+      const id = req.params.id
+      const query = {_id: new ObjectId(id)};
+      const result = await toysCollection.deleteOne(query);
       res.send(result)
     })
 
