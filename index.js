@@ -57,7 +57,7 @@ async function run() {
 
     // get all toys
     app.get('/allToys', async(req,res) => {
-      const result = await toysCollection.find({}).toArray();
+      const result = await toysCollection.find({}).limit(20).toArray();
       res.send(result)
     })
 
@@ -81,6 +81,28 @@ async function run() {
       const result = await toysCollection.findOne(filter)
       res.send(result)
     })
+
+    // update
+    app.patch('/allToys/:id', async(req,res)=>{
+      const id = req.params.id
+      const updateToyData = req.body;
+      const filter = {_id: new ObjectId(id)}
+      const updateToy = {
+        $set: {
+          name: updateToyData.name,
+          picture: updateToyData.picture,
+          price: updateToyData.price,
+          rating: updateToyData.rating,
+          quantity: updateToyData.quantity,
+          details: updateToyData.details
+        }
+      }
+      const result = await toysCollection.updateOne(filter, updateToy);
+      res.send(result)
+    })
+
+
+    
 
 
 
