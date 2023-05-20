@@ -25,8 +25,37 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    client.connect();
     const toysCollection = client.db('toyLab').collection('toys');
+
+    // get all toys
+    app.get('/allToys', async(req,res) => {
+      const result = await toysCollection.find({}).limit(20).toArray();
+      res.send(result)
+    })
+
+
+    // get all toys by category
+    app.get('/toys/:category', async(req,res) => {
+      if(req.params.category == 'Baby' || req.params.category == "Barbie" || req.params.category == 'American'){
+
+          const result = await toysCollection.find({category:req.params.category}).toArray();
+          return res.send(result)
+      }
+      else{
+          const result = await toysCollection.find({}).toArray();
+          res.send(result)
+      }
+  })
+
+
+
+    // my toys
+    app.get('/myToys/:email', async(req,res)=> {
+      const result = await toysCollection.find({seller_email: req.params.email}).toArray()
+      res.send(result)
+    })
+
 
     const indexKeys = {name: 1}
     const indexOptions = {name: "name"}
@@ -42,24 +71,8 @@ async function run() {
       res.send(result)
     })
     
-    // get all toys by category
-    app.get('/toys/:category', async(req,res) => {
-        if(req.params.category == 'Baby' || req.params.category == "Barbie" || req.params.category == 'American'){
-
-            const result = await toysCollection.find({category:req.params.category}).toArray();
-            return res.send(result)
-        }
-        else{
-            const result = await toysCollection.find({}).toArray();
-            res.send(result)
-        }
-    })
-
-    // get all toys
-    app.get('/allToys', async(req,res) => {
-      const result = await toysCollection.find({}).limit(20).toArray();
-      res.send(result)
-    })
+    
+    
 
     // insert a toy
     app.post('/addToy', async(req,res) => {
@@ -68,11 +81,7 @@ async function run() {
       res.send(result)
     })
 
-    // my toys
-    app.get('/myToys/:email', async(req,res)=> {
-      const result = await toysCollection.find({seller_email: req.params.email}).toArray()
-      res.send(result)
-    })
+    
     
 
 
